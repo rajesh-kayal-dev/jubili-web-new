@@ -1,9 +1,9 @@
 import { Product } from '@/lib/types/product';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useCallback } from 'react';
 import { toggleProductLike } from '@/services/product.service';
 import { useAuth } from '@/hooks/useAuth';
+import { useCart } from '@/hooks/useCart';
 
 interface ProductCardProps {
   product: Product;
@@ -17,6 +17,7 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
   const [likeCount, setLikeCount] = useState(product.likeCount);
   const [likeLoading, setLikeLoading] = useState(false);
   const { token } = useAuth();
+  const { addToCart, loading: cartLoading } = useCart();
   
   const discountedPrice = product.price - (product.price * product.discount) / 100;
   const hasDiscount = product.discount > 0;
@@ -61,7 +62,7 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
   }, []);
 
   return (
-    <div className="relative border bg-white overflow-hidden flex flex-col">
+    <div className="relative bg-white overflow-hidden flex flex-col">
       {/* Background image only on laptop and up */}
       {bgImage && (
         <div className="hidden lg:block absolute right-0 top-0 h-full w-1/2 z-0 overflow-hidden">
@@ -157,15 +158,17 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
             />
             <span className="text-sm text-gray-600">{likeCount}</span>
           </button>
-          <button>
+          <div className="flex-1" />
+          <button className="flex items-center gap-1 text-gray-700">
             <img
               src="/icons/heart.svg"
               alt="Compare"
               width={24}
               height={24}
             />
+            <span className='text-xs'>Add to Wishlist</span>
           </button>
-          <div className="flex-5" />
+          <div className="flex-15" />
           <button 
             className="flex items-center gap-1 text-gray-700"
             aria-label="Share product"
@@ -234,6 +237,15 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
               Make it yours
             </button>
           </Link>
+          <button 
+            onClick={() => addToCart(product.productId)}
+            disabled={cartLoading}
+            className={`${
+              cartLoading ? 'bg-gray-400' : 'bg-gray-300 hover:bg-gray-400'
+            } text-white rounded-full px-3 py-3 text-lg font-semibold transition-colors`}
+          >
+            <img src="/icons/cart-bag.svg" alt="Add to Cart" />
+          </button>
           <div className="flex-1" />
         </div>
       </div>

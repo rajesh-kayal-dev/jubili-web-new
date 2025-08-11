@@ -1,7 +1,28 @@
 import { API_BASE_URL, API_ENDPOINTS } from '@/lib/constants/api';
-import { CartResponse } from '@/lib/types/cart';
+import { CartAction, CartActionResponse, CartResponse } from '@/lib/types/cart';
 
 class UserActionsService {
+  async addToCart(data: CartAction): Promise<CartActionResponse> {
+    try {
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.USER_ACTIONS.DY_CART_RTE}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add to cart');
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      throw error;
+    }
+  }
+
   async getCart(userId: string): Promise<CartResponse> {
     try {
       const response = await fetch(

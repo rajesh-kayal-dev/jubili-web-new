@@ -46,7 +46,7 @@ function SearchContent() {
   } = useSearch(query, token || undefined);
 
   return (
-    <div className="container mx-auto px-0 py-6 border border-blue-500">
+    <div className=" py-6">
       {/* Search query display */}
       {query && (
         <div className="mb-6 px-4">

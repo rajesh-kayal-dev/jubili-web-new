@@ -1,3 +1,18 @@
+export interface CartAction {
+  userId: string;
+  actionType: 'CART';
+  productId: string;
+  quantity: string;
+}
+
+export interface CartActionResponse {
+  userId: string;
+  actionType: 'CART';
+  productId: string;
+  quantity: string;
+  createdAt: string;
+}
+
 export interface CartItem {
   productId: string;
   productName: string;

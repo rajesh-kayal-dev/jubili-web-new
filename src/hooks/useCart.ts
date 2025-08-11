@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { userActionsService } from '@/services/userActions.service';
-import { CartResponse } from '@/lib/types/cart';
+import { CartResponse, CartAction } from '@/lib/types/cart';
 import { useAuth } from './useAuth';
 
 interface UseCartReturn {
@@ -9,6 +9,7 @@ interface UseCartReturn {
   error: string | null;
   fetchCart: () => Promise<CartResponse | null>;
   refetch: () => Promise<void>;
+  addToCart: (productId: string) => Promise<void>;
 }
 
 export const useCart = (): UseCartReturn => {
@@ -31,19 +32,46 @@ export const useCart = (): UseCartReturn => {
       const cartData = await userActionsService.getCart(userId);
       setCart(cartData);
       return cartData;
-    } catch (err: unknown) {
-      const errorMessage = err instanceof Error 
-        ? err.message 
-        : 'Error fetching cart';
-      setError(errorMessage);
+    await fetchCart();
+    } catch (err) {
       console.error('Error fetching cart:', err);
+      setError('Failed to fetch cart');
       return null;
     } finally {
       setLoading(false);
     }
   }, [userId]);
 
-  const refetch = useCallback(async (): Promise<void> => {
+  const addToCart = useCallback(async (productId: string) => {
+    if (!userId) {
+      setError('User not authenticated');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const cartAction: CartAction = {
+        userId,
+        actionType: 'CART',
+        productId,
+        quantity: "1"
+      };
+
+      const response = await userActionsService.addToCart(cartAction);
+      console.log('Product added to cart:', response);
+      await fetchCart(); // Refresh cart after adding item
+    } catch (err) {
+      console.error('Failed to add product to cart:', err);
+      setError('Failed to add product to cart');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [userId, fetchCart]);
+
+  const refetch = useCallback(async () => {
     await fetchCart();
   }, [fetchCart]);
 
@@ -53,5 +81,5 @@ export const useCart = (): UseCartReturn => {
     error,
     fetchCart,
     refetch,
+    addToCart,}
   };
-};
