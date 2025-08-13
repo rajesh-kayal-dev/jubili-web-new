@@ -1,22 +1,39 @@
 'use client';
 
-
-import CustomButton from '../components/ui/CustomButton';
-import { useAsyncAction } from '../hooks/useAsyncAction';
-import Navbar from '../components/layout/Navbar';
+import { useState } from 'react';
+import CustomButton from '@/components/ui/CustomButton';
+import { useToastActions } from '@/hooks/useToastActions';
+import Navbar from '@/components/layout/Navbar';
 
 export default function Home() {
-  const { trigger, loading } = useAsyncAction(async () => {
-    console.log("Fake API call triggered.");
-  }, 1500);
+  const { showSuccess, showError, showWarning, showInfo, showToastWithAction } = useToastActions();
+  const [loading, setLoading] = useState(false);
+
+  const handleClick = async () => {
+    setLoading(true);
+    
+      showToastWithAction(
+        'info',
+        'Interactive Toast',
+        'Click the action button to see what happens!',
+        'Try Me',
+        () => {
+          showSuccess('Great job!', 'You found the hidden success message 🎉');
+        },
+        1000
+      );
+    
+    setLoading(false);
+  };
 
   return (
     <>
-      <main style={{ padding: "2rem", height: "200vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+      <main style={{ padding: "2rem", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
+        {loading && <p>Loading...</p>}
         <CustomButton
-          onClick={trigger}
-          loading={loading}
+          onClick={handleClick}
           label="Click Me"
+          loading={loading}
         />
       </main>
       <Navbar />

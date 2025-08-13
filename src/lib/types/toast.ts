@@ -1,0 +1,22 @@
+// src/lib/types/toast.ts
+export type ToastType = 'success' | 'error' | 'warning' | 'info';
+
+export interface Toast {
+  id: string;
+  type: ToastType;
+  title: string;
+  message?: string;
+  duration?: number; // in milliseconds
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
+}
+
+export interface ToastContextType {
+  toasts: Toast[];
+  addToast: (toast: Omit<Toast, 'id'>) => void;
+  removeToast: (id: string) => void;
+  clearAllToasts: () => void;
+}
+
