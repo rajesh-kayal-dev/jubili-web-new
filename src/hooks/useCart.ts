@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { userActionsService } from '@/services/userActions.service';
-import { CartResponse, CartAction } from '@/lib/types/cart';
+import { CartResponse, CartAction, CartDelete } from '@/lib/types/cart';
 import { useAuth } from './useAuth';
 
 interface UseCartReturn {
@@ -10,6 +10,8 @@ interface UseCartReturn {
   fetchCart: () => Promise<CartResponse | null>;
   refetch: () => Promise<void>;
   addToCart: (productId: string) => Promise<void>;
+  updateQuantity: (productId: string, newQuantity: number) => Promise<void>;
+  removeFromCart: (productId: string) => Promise<void>;
 }
 
 export const useCart = (): UseCartReturn => {
@@ -32,7 +34,6 @@ export const useCart = (): UseCartReturn => {
       const cartData = await userActionsService.getCart(userId);
       setCart(cartData);
       return cartData;
-    await fetchCart();
     } catch (err) {
       console.error('Error fetching cart:', err);
       setError('Failed to fetch cart');
@@ -71,6 +72,67 @@ export const useCart = (): UseCartReturn => {
     }
   }, [userId, fetchCart]);
 
+  const updateQuantity = useCallback(async (productId: string, newQuantity: number) => {
+    if (!userId) {
+      setError('User not authenticated');
+      return;
+    }
+
+    if (newQuantity < 1) {
+      setError('Quantity must be at least 1');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const cartAction: CartAction = {
+        userId,
+        actionType: 'CART',
+        productId,
+        quantity: newQuantity.toString()
+      };
+
+      await userActionsService.addToCart(cartAction);
+      await fetchCart(); // Refresh cart after updating quantity
+    } catch (err) {
+      console.error('Failed to update quantity:', err);
+      setError('Failed to update quantity');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [userId, fetchCart]);
+
+  const removeFromCart = useCallback(async (productId: string) => {
+    if (!userId) {
+      setError('User not authenticated');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Set quantity to 0 to remove the item
+      const cartDelete: CartDelete = {
+        userId,
+        actionType: 'CART',
+        productId,
+      };
+
+      await userActionsService.deleteCart(cartDelete);
+      await fetchCart(); // Refresh cart after removing item
+    } catch (err) {
+      console.error('Failed to remove from cart:', err);
+      setError('Failed to remove from cart');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [userId, fetchCart]);
+
   const refetch = useCallback(async () => {
     await fetchCart();
   }, [fetchCart]);
@@ -81,5 +143,8 @@ export const useCart = (): UseCartReturn => {
     error,
     fetchCart,
     refetch,
-    addToCart,}
+    addToCart,
+    updateQuantity,
+    removeFromCart,
   };
+};

@@ -1,10 +1,10 @@
 import { API_BASE_URL, API_ENDPOINTS } from '@/lib/constants/api';
-import { CartAction, CartActionResponse, CartResponse } from '@/lib/types/cart';
+import { CartAction, CartActionResponse, CartDelete, CartResponse } from '@/lib/types/cart';
 
 class UserActionsService {
   async addToCart(data: CartAction): Promise<CartActionResponse> {
     try {
-      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.USER_ACTIONS.DY_CART_RTE}`, {
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.USER_ACTIONS.BASE}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -43,6 +43,26 @@ class UserActionsService {
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Error fetching cart';
       throw new Error(errorMessage);
+    }
+  }
+
+  async deleteCart(data: CartDelete): Promise<void> {
+    try {
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.USER_ACTIONS.BASE}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      console.log('Delete cart response:', response);
+
+      if (!response.ok) {
+        throw new Error('Failed to delete from cart');
+      }
+    } catch (error) {
+      console.error('Error deleting from cart:', error);
+      throw error;
     }
   }
 }

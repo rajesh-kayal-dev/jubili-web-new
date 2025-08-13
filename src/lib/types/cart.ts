@@ -40,3 +40,9 @@ export interface CartResponse {
   finalTotal: number;
   message: string;
 }
+
+export interface CartDelete{
+  userId: string;
+  actionType: 'CART';
+  productId: string;
+}

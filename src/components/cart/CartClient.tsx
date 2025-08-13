@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useCart } from '@/hooks/useCart';
 import CustomButton from '@/components/ui/CustomButton';
-import { FaTrash } from 'react-icons/fa';
+import { FaTrash, FaMinus, FaPlus } from 'react-icons/fa';
 
 // Loading component - FIXED: No longer covers navbar
 function LoadingSpinner() {
@@ -84,8 +84,9 @@ function EmptyCart({ onContinueShopping }: { onContinueShopping: () => void }) {
 
 export const CartClient = () => {
   const router = useRouter();
-  const { cart, loading, error, fetchCart } = useCart();
+  const { cart, loading, error, fetchCart, updateQuantity, removeFromCart } = useCart();
   const [voucher, setVoucher] = useState('');
+  const [loadingItems, setLoadingItems] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     fetchCart();
@@ -108,7 +109,48 @@ export const CartClient = () => {
     console.log('Applying voucher:', voucher);
   }, [voucher]);
 
-  if (loading) {
+  const handleQuantityChange = useCallback(async (
+    productId: string, 
+    currentQuantity: number, 
+    delta: number,
+    size: string,
+    color: string
+  ) => {
+    const newQuantity = currentQuantity + delta;
+    const itemKey = `${productId}-${size}-${color}`;
+    
+    if (newQuantity < 1) return;
+
+    setLoadingItems(prev => ({ ...prev, [itemKey]: true }));
+
+    try {
+      await updateQuantity(productId, newQuantity);
+    } catch (error) {
+      console.error('Failed to update quantity:', error);
+    } finally {
+      setLoadingItems(prev => ({ ...prev, [itemKey]: false }));
+    }
+  }, [updateQuantity]);
+
+  const handleRemoveItem = useCallback(async (
+    productId: string,
+    size: string,
+    color: string
+  ) => {
+    const itemKey = `${productId}-${size}-${color}`;
+    
+    setLoadingItems(prev => ({ ...prev, [itemKey]: true }));
+
+    try {
+      await removeFromCart(productId);
+    } catch (error) {
+      console.error('Failed to remove item:', error);
+    } finally {
+      setLoadingItems(prev => ({ ...prev, [itemKey]: false }));
+    }
+  }, [removeFromCart]);
+
+  if (loading && !cart) {
     return <LoadingSpinner />;
   }
 
@@ -139,91 +181,99 @@ export const CartClient = () => {
             </div>
 
             {/* Cart Items */}
-            {cart.items.map((item) => (
-              <div
-                key={`${item.productId}-${item.size}-${item.color}`}
-                className="flex flex-col md:grid md:grid-cols-12 items-start md:items-center px-6 py-6 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition"
-              >
-                {/* Product Info */}
-                <div className="flex items-center gap-4 col-span-5 w-full md:w-auto mb-4 md:mb-0">
-                  <div className="relative w-16 h-16 flex-shrink-0">
-                    <Image 
-                      src={item.imageUrl} 
-                      alt={item.productName} 
-                      fill
-                      className="object-cover rounded-lg" 
-                      sizes="64px"
-                    />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-semibold text-base text-gray-900 break-words">
-                      {item.productName}
-                    </h3>
-                    <div className="text-xs text-gray-500 mt-1">
-                      <span>Brand: {item.brand}</span>
-                      <span className="mx-1">•</span>
-                      <span>Color: {item.color}</span>
-                      <span className="mx-1">•</span>
-                      <span>Size: {item.size}</span>
+            {cart.items.map((item) => {
+              const itemKey = `${item.productId}-${item.size}-${item.color}`;
+              const isItemLoading = loadingItems[itemKey] || false;
+              
+              return (
+                <div
+                  key={itemKey}
+                  className="flex flex-col md:grid md:grid-cols-12 items-start md:items-center px-6 py-6 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition"
+                >
+                  {/* Product Info */}
+                  <div className="flex items-center gap-4 col-span-5 w-full md:w-auto mb-4 md:mb-0">
+                    <div className="relative w-16 h-16 flex-shrink-0">
+                      <Image 
+                        src={item.imageUrl} 
+                        alt={item.productName} 
+                        fill
+                        className="object-cover rounded-lg" 
+                        sizes="64px"
+                      />
                     </div>
-                    <div className="text-xs text-gray-500 mt-1">
-                      Material: {item.material}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Quantity */}
-                <div className="flex items-center gap-2 col-span-3 w-full md:justify-center mb-4 md:mb-0">
-                  <button 
-                    className="w-8 h-8 rounded-full border border-gray-300 text-lg font-bold flex items-center justify-center hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed" 
-                    disabled
-                    aria-label="Decrease quantity"
-                  >
-                    -
-                  </button>
-                  <span className="mx-2 font-medium text-base min-w-[2ch] text-center">
-                    {item.quantity}
-                  </span>
-                  <button 
-                    className="w-8 h-8 rounded-full border border-gray-300 text-lg font-bold flex items-center justify-center hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed" 
-                    disabled
-                    aria-label="Increase quantity"
-                  >
-                    +
-                  </button>
-                </div>
-
-                {/* Total */}
-                <div className="col-span-2 w-full md:text-center mb-4 md:mb-0">
-                  <div className="flex flex-col items-start md:items-center">
-                    <span className="font-semibold text-lg text-gray-900">
-                      ₹{item.totalDiscountedPrice.toLocaleString()}
-                    </span>
-                    {item.discountOnProduct > 0 && (
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-semibold text-base text-gray-900 break-words">
+                        {item.productName}
+                      </h3>
                       <div className="text-xs text-gray-500 mt-1">
-                        <span className="line-through mr-1">
-                          ₹{(item.price * item.quantity).toLocaleString()}
-                        </span>
-                        <span className="text-green-600">
-                          ({item.discountOnProduct}% off)
-                        </span>
+                        <span>Brand: {item.brand}</span>
+                        <span className="mx-1">•</span>
+                        <span>Color: {item.color}</span>
+                        <span className="mx-1">•</span>
+                        <span>Size: {item.size}</span>
                       </div>
-                    )}
+                      <div className="text-xs text-gray-500 mt-1">
+                        Material: {item.material}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Quantity */}
+                  <div className="flex items-center gap-2 col-span-3 w-full md:justify-center mb-4 md:mb-0">
+                    <button 
+                      className="w-8 h-8 rounded-full border border-gray-300 text-sm font-bold flex items-center justify-center hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed" 
+                      disabled={isItemLoading || item.quantity <= 1}
+                      onClick={() => handleQuantityChange(item.productId, item.quantity, -1, item.size, item.color)}
+                      aria-label="Decrease quantity"
+                    >
+                      <FaMinus size={10} />
+                    </button>
+                    <span className="mx-2 font-medium text-base min-w-[2ch] text-center">
+                      {isItemLoading ? '...' : item.quantity}
+                    </span>
+                    <button 
+                      className="w-8 h-8 rounded-full border border-gray-300 text-sm font-bold flex items-center justify-center hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed" 
+                      disabled={isItemLoading}
+                      onClick={() => handleQuantityChange(item.productId, item.quantity, 1, item.size, item.color)}
+                      aria-label="Increase quantity"
+                    >
+                      <FaPlus size={10} />
+                    </button>
+                  </div>
+
+                  {/* Total */}
+                  <div className="col-span-2 w-full md:text-center mb-4 md:mb-0">
+                    <div className="flex flex-col items-start md:items-center">
+                      <span className="font-semibold text-lg text-gray-900">
+                        ₹{item.totalDiscountedPrice.toLocaleString()}
+                      </span>
+                      {item.discountOnProduct > 0 && (
+                        <div className="text-xs text-gray-500 mt-1">
+                          <span className="line-through mr-1">
+                            ₹{(item.price * item.quantity).toLocaleString()}
+                          </span>
+                          <span className="text-green-600">
+                            ({item.discountOnProduct}% off)
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Action */}
+                  <div className="col-span-2 w-full md:text-center">
+                    <button 
+                      className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-100 transition text-gray-500 hover:text-red-600 disabled:opacity-50 disabled:cursor-not-allowed" 
+                      disabled={isItemLoading}
+                      onClick={() => handleRemoveItem(item.productId, item.size, item.color)}
+                      aria-label="Remove item from cart"
+                    >
+                      <FaTrash size={14} />
+                    </button>
                   </div>
                 </div>
-
-                {/* Action */}
-                <div className="col-span-2 w-full md:text-center">
-                  <button 
-                    className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-100 transition text-gray-500 hover:text-red-600 disabled:opacity-50 disabled:cursor-not-allowed" 
-                    disabled
-                    aria-label="Remove item from cart"
-                  >
-                    <FaTrash size={14} />
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -300,7 +350,7 @@ export const CartClient = () => {
 
             <CustomButton
               label={`Checkout Now (₹${cart.finalTotal.toLocaleString()})`}
-              loading={false}
+              loading={loading}
               onClick={handleCheckout}
             />
             
