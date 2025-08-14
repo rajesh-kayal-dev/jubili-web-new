@@ -6,6 +6,8 @@ type Props = {
   label: string;
   icon?: ReactElement;
   iconPosition?: 'left' | 'right';
+  backgroundColor?: string;
+  textColor?: string;
 };
 
 export default function CustomButton({ 
@@ -13,7 +15,9 @@ export default function CustomButton({
   loading, 
   label, 
   icon, 
-  iconPosition = 'left' 
+  iconPosition = 'left',
+  backgroundColor = '#262626',
+  textColor = '#ffffff'
 }: Props) {
   return (
     <button
@@ -21,8 +25,8 @@ export default function CustomButton({
       disabled={loading}
       style={{
         padding: "8px 16px",
-        backgroundColor: "#262626",
-        color: "#fff",
+        backgroundColor: backgroundColor,
+        color: textColor,
         border: "none",
         borderRadius: "30px",
         cursor: loading ? "not-allowed" : "pointer",
