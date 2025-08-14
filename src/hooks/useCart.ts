@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { userActionsService } from '@/services/userActions.service';
 import { CartResponse, CartAction, CartDelete } from '@/lib/types/cart';
 import { useAuth } from './useAuth';
+import { useToastActions } from './useToastActions';
 
 interface UseCartReturn {
   cart: CartResponse | null;
@@ -19,6 +20,7 @@ export const useCart = (): UseCartReturn => {
   const [cart, setCart] = useState<CartResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { showToastWithAction } = useToastActions();
 
   const fetchCart = useCallback(async (): Promise<CartResponse | null> => {
     if (!userId) {
@@ -68,6 +70,16 @@ export const useCart = (): UseCartReturn => {
       setError('Failed to add product to cart');
       throw err;
     } finally {
+      showToastWithAction(
+        'info',
+        'Success',
+        'Item added to cart',
+        'View Cart',
+        () => {
+          
+        },
+        5000
+      );
       setLoading(false);
     }
   }, [userId, fetchCart]);

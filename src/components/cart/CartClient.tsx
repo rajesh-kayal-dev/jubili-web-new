@@ -8,12 +8,12 @@ import CustomButton from '@/components/ui/CustomButton';
 import { FaTrash, FaMinus, FaPlus } from 'react-icons/fa';
 
 // Loading component - FIXED: No longer covers navbar
+import PageHeading from "@/components/shared/PageHeading";
+
 function LoadingSpinner() {
   return (
     <div className="max-w-6xl mx-auto p-4">
-      <div className="py-4 text-4xl font-bold">
-        What&apos;s in your Bag?
-      </div>
+      <PageHeading title="What's in your Bag?" />
       <div className="flex items-center justify-center py-12">
         <div className="flex flex-col items-center">
           <img src="/icons/loading.svg" alt="Loading..." className="w-8 h-8 animate-spin mb-4" />
@@ -28,9 +28,7 @@ function LoadingSpinner() {
 function ErrorMessage({ error, onRetry }: { error: string; onRetry: () => void }) {
   return (
     <div className="max-w-6xl mx-auto p-4">
-      <div className="py-4 text-4xl font-bold">
-        What&apos;s in your Bag?
-      </div>
+      <PageHeading title="What's in your Bag?" />
       <div className="text-center py-8">
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
           <h3 className="text-red-800 font-medium mb-2">Error loading cart</h3>
@@ -51,9 +49,7 @@ function ErrorMessage({ error, onRetry }: { error: string; onRetry: () => void }
 function EmptyCart({ onContinueShopping }: { onContinueShopping: () => void }) {
   return (
     <div className="max-w-6xl mx-auto p-4">
-      <div className="py-4 text-4xl font-bold">
-        What&apos;s in your Bag?
-      </div>
+      <PageHeading title="What's in your Bag?" />
       <div className="text-center py-12">
         <div className="mb-6">
           <svg 
@@ -164,10 +160,7 @@ export const CartClient = () => {
 
   return (
     <div className="max-w-6xl mx-auto p-4">
-      <div className="py-4 text-4xl font-bold">
-        What&apos;s in your Bag?
-      </div>
-      
+      <PageHeading title="What's in your Bag?" />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Left: Cart Items */}
         <div className="md:col-span-2">
