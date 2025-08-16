@@ -118,8 +118,8 @@ export default function UserProfile() {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                     </svg>
                                 }
-                            />
-                            &nbsp;&nbsp;
+                            /> 
+                            <span className="px-1"></span>
                             <CustomButton
                                 onClick={logout}
                                 loading={false}

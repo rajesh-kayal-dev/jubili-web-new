@@ -133,7 +133,7 @@ export default function HomePage() {
         <section className="mt-12 bg-[#F5F5F5] rounded-lg p-8">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-2xl font-bold mb-4">What people say</h2>
-            <p className="text-xl italic mb-4">"I love the way they handle the order."</p>
+            <p className="text-xl italic mb-4">I love the way they handle the order.</p>
             <p className="text-sm">All customers receive a personal shopper to help them find exactly what they need.</p>
             <p className="font-medium mt-4">Samantha Wilson</p>
           </div>
@@ -141,7 +141,7 @@ export default function HomePage() {
 
         {/* Why Shop With Us */}
         <section className="mt-12 mb-12">
-          <h2 className="text-2xl font-bold mb-6">Why you'll love to shop on our website</h2>
+          <h2 className="text-2xl font-bold mb-6">Why you&apos;ll love to shop on our website</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               { icon: "❤️", title: "Take care with love", desc: "We take care of all your shopping needs with attention to detail and personalized service." },
