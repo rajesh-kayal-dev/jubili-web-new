@@ -9,6 +9,8 @@ export const API_ENDPOINTS = {
   PRODUCTS: {
     SEARCH: '/api/products/search-products',
     LIKE: '/api/products/like',
+    // Product details endpoint expects a query param: ?id={productId}
+    DETAIL: '/api/products',
   },
   USER_ACTIONS: {
     BASE: '/api/user-actions',

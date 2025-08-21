@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useCart } from '@/hooks/useCart';
 import CustomButton from '@/components/ui/CustomButton';
 import { FaTrash, FaMinus, FaPlus } from 'react-icons/fa';
@@ -184,7 +185,7 @@ export const CartClient = () => {
                   className="flex flex-col md:grid md:grid-cols-12 items-start md:items-center px-6 py-6 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition"
                 >
                   {/* Product Info */}
-                  <div className="flex items-center gap-4 col-span-5 w-full md:w-auto mb-4 md:mb-0">
+                  <Link href={`/product/${item.productId}`} className="flex items-center gap-4 col-span-5 w-full md:w-auto mb-4 md:mb-0">
                     <div className="relative w-16 h-16 flex-shrink-0">
                       <Image 
                         src={item.imageUrl} 
@@ -195,7 +196,7 @@ export const CartClient = () => {
                       />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h3 className="font-semibold text-base text-gray-900 break-words">
+                      <h3 className="font-semibold text-base text-gray-900 break-words hover:underline">
                         {item.productName}
                       </h3>
                       <div className="text-xs text-gray-500 mt-1">
@@ -209,7 +210,7 @@ export const CartClient = () => {
                         Material: {item.material}
                       </div>
                     </div>
-                  </div>
+                  </Link>
 
                   {/* Quantity */}
                   <div className="flex items-center gap-2 col-span-3 w-full md:justify-center mb-4 md:mb-0">

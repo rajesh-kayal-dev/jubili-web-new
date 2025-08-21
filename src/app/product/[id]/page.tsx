@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react';
 import Navbar from '@/components/layout/Navbar';
-import { useSearchParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { useProduct } from '@/hooks/useProduct';
 
@@ -24,8 +24,8 @@ function ErrorMessage({ error, onRetry }: { error: string; onRetry: () => void }
 }
 
 function ProductContent() {
-  const params = useSearchParams();
-  const id = params.get('id');
+  const params = useParams<{ id: string }>();
+  const id = params?.id ?? null;
   const { token } = useAuth();
   const { isLoading, product, error, retry } = useProduct(id, token || undefined);
 
@@ -65,7 +65,7 @@ function ProductContent() {
   );
 }
 
-export default function ProductPage() {
+export default function ProductDetailsPage() {
   return (
     <>
       <Navbar />
@@ -75,3 +75,5 @@ export default function ProductPage() {
     </>
   );
 }
+
+

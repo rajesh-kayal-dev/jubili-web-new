@@ -86,10 +86,10 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
       <div className="relative z-10 py-5">
         {/* Top Row */}
         <div className="flex items-start justify-between mb-1 w-full md:w-2/3 lg:w-1/2 px-4">
-          <div>
-            <h2 className="text-xl font-semibold">{product.productName}</h2>
+          <Link href={`/product/${product.productId}`} className="group">
+            <h2 className="text-xl font-semibold group-hover:underline">{product.productName}</h2>
             <p className="text-sm text-gray-500">{product.brand || "Brand"}</p>
-          </div>
+          </Link>
           <div className="w-15" />
           <div className="flex items-center gap-15">
             <div className="flex items-center gap-2">
@@ -125,18 +125,19 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
           <div className="flex overflow-x-auto gap-4 mb-2" style={{ height: 320 }}>
             <div style={{ height: 300, width: 0 }} />
             {product.imageUrls.map((url, idx) => (
-              <img
-                key={`${product.productId}-${idx}`}
-                src={url}
-                alt={`${product.productName} - view ${idx + 1}`}
-                width={300}
-                height={300}
-                onMouseEnter={() => setBgImage(url)}
-                style={{ height: 300, width: "auto" }}
-                className="object-cover rounded-xl cursor-pointer"
-                onError={handleImageError}
-                sizes="300px"
-              />
+              <Link key={`${product.productId}-${idx}`} href={`/product/${product.productId}`}>
+                <img
+                  src={url}
+                  alt={`${product.productName} - view ${idx + 1}`}
+                  width={300}
+                  height={300}
+                  onMouseEnter={() => setBgImage(url)}
+                  style={{ height: 300, width: "auto" }}
+                  className="object-cover rounded-xl cursor-pointer"
+                  onError={handleImageError}
+                  sizes="300px"
+                />
+              </Link>
             ))}
           </div>
         )}

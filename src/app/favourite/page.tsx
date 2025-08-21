@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Quicksand } from "next/font/google";
 import Image from "next/image";
+import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import { useLikedProducts } from "@/hooks/useLikedProducts";
 import PageHeading from "@/components/shared/PageHeading";
@@ -69,7 +70,7 @@ export default function FavouritePage() {
                     className="flex flex-col md:grid md:grid-cols-12 items-start md:items-center ml-2 md:ml-6 mr-2 md:mr-6 py-6 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition"
                   >
                     {/* Product Info */}
-                    <div className="flex items-center gap-4 col-span-6 w-full md:w-auto mb-2 md:mb-0">
+                    <Link href={`/product/${item.productId}`} className="flex items-center gap-4 col-span-6 w-full md:w-auto mb-2 md:mb-0">
                       <div className="relative w-16 h-16 flex-shrink-0">
                         <Image 
                           src={item.imageUrls[0] || '/placeholder-image.jpg'} 
@@ -80,20 +81,20 @@ export default function FavouritePage() {
                         />
                       </div>
                       <div>
-                        <div className="font-semibold text-base text-gray-900 break-words max-w-[150px] md:max-w-none">
+                        <div className="font-semibold text-base text-gray-900 break-words max-w-[150px] md:max-w-none hover:underline">
                           {item.productName}
                         </div>
                         <div className="flex gap-2 mt-2">
                           <button
                             className="bg-gray-200 text-gray-700 rounded-full px-4 py-1 text-sm font-semibold hover:bg-gray-300 transition disabled:opacity-50"
-                            onClick={() => handleUnlike(item.productId)}
+                            onClick={(e) => { e.preventDefault(); handleUnlike(item.productId); }}
                             disabled={loading}
                           >
                             Unlike
                           </button>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                     
                     {/* Description */}
                     <div className="col-span-6 w-full md:justify-center mb-2 md:mb-0 text-gray-700 text-sm">

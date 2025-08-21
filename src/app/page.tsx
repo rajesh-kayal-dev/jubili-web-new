@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 export default function HomePage() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  // const [user, setUser] = useState<any>(null);
 
 
   // Sample product data with online images
@@ -166,7 +166,7 @@ export default function HomePage() {
             </div>
             <div>
               <h3 className="text-xl font-bold mb-3">How to combine your daily outfit to looks fresh and cool.</h3>
-              <p className="text-gray-600 mb-4">Staying stylish everyday doesn't have to be complicated. Master these simple fashion tips to elevate your daily look with minimal effort.</p>
+              <p className="text-gray-600 mb-4">Staying stylish everyday doesn&apos;t have to be complicated. Master these simple fashion tips to elevate your daily look with minimal effort.</p>
               <button className="text-black font-medium">Read More →</button>
             </div>
           </div>
