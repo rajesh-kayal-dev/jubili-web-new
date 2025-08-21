@@ -18,7 +18,7 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
   const [likeLoading, setLikeLoading] = useState(false);
   const { token } = useAuth();
   const { addToCart, loading: cartLoading } = useCart();
-  
+
   const discountedPrice = product.price - (product.price * product.discount) / 100;
   const hasDiscount = product.discount > 0;
   const hasImages = product.imageUrls && product.imageUrls.length > 0;
@@ -33,17 +33,17 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
       console.warn('User must be logged in to like products');
       return;
     }
-    
+
     if (likeLoading) return;
-    
+
     setLikeLoading(true);
     const previousIsLiked = isLiked;
     const previousLikeCount = likeCount;
-    
+
     // Optimistic update
     setIsLiked(!isLiked);
     setLikeCount(prev => isLiked ? prev - 1 : prev + 1);
-    
+
     try {
       await toggleProductLike(product.productId, token);
       onLikeToggle?.(product.productId, !previousIsLiked);
@@ -85,11 +85,12 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
       {/* Foreground content */}
       <div className="relative z-10 py-5">
         {/* Top Row */}
+        <Link href={`/product/${product.productId}`}>
         <div className="flex items-start justify-between mb-1 w-full md:w-2/3 lg:w-1/2 px-4">
-          <Link href={`/product/${product.productId}`} className="group">
-            <h2 className="text-xl font-semibold group-hover:underline">{product.productName}</h2>
+          <div>
+            <h2 className="text-xl font-semibold">{product.productName}</h2>
             <p className="text-sm text-gray-500">{product.brand || "Brand"}</p>
-          </Link>
+          </div>
           <div className="w-15" />
           <div className="flex items-center gap-15">
             <div className="flex items-center gap-2">
@@ -111,33 +112,34 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
                 </div>
               )}
             </div>
-            <button 
+            {/* <button 
               className="text-2xl px-2"
               aria-label="More options"
             >
               <b>⋮</b>
-            </button>
+            </button> */}
           </div>
         </div>
+        </Link>
 
         {/* Thumbnails */}
         {hasImages && (
           <div className="flex overflow-x-auto gap-4 mb-2" style={{ height: 320 }}>
             <div style={{ height: 300, width: 0 }} />
             {product.imageUrls.map((url, idx) => (
-              <Link key={`${product.productId}-${idx}`} href={`/product/${product.productId}`}>
-                <img
-                  src={url}
-                  alt={`${product.productName} - view ${idx + 1}`}
-                  width={300}
-                  height={300}
-                  onMouseEnter={() => setBgImage(url)}
-                  style={{ height: 300, width: "auto" }}
-                  className="object-cover rounded-xl cursor-pointer"
-                  onError={handleImageError}
-                  sizes="300px"
-                />
-              </Link>
+              <img
+                key={`${product.productId}-${idx}`}
+                src={url}
+                alt={`${product.productName} - view ${idx + 1}`}
+                width={300}
+                height={300}
+                onMouseEnter={() => setBgImage(url)}
+                style={{ height: 300, width: "auto" }}
+                className="object-cover rounded-xl cursor-pointer"
+                onError={handleImageError}
+                sizes="300px"
+              />
+
             ))}
           </div>
         )}

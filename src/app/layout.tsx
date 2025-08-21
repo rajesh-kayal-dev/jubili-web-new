@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from '@/contexts/ToastContext';
-import FullscreenWrapper from "@/components/layout/FullscreenWrapper";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -24,9 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
         <ToastProvider>
-          <FullscreenWrapper>
             {children}
-          </FullscreenWrapper>
         </ToastProvider>
       </body>
     </html>
