@@ -24,9 +24,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
         <ToastProvider>
-          {/* <FullscreenWrapper> */}
+          <FullscreenWrapper>
             {children}
-          {/* </FullscreenWrapper> */}
+          </FullscreenWrapper>
         </ToastProvider>
       </body>
     </html>
