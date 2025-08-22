@@ -39,7 +39,15 @@ export default function CustomButton({
       }}
     >
       {loading ? (
-        "Loading..."
+        <img 
+          src="/icons/loading.svg" 
+          alt="Loading" 
+          style={{ 
+            width: "20px", 
+            height: "20px",
+            filter: "brightness(0) invert(1)" // Makes the SVG white to match text color
+          }} 
+        />
       ) : (
         <>
           {icon && iconPosition === 'left' && (

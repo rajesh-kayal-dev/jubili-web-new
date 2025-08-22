@@ -178,7 +178,7 @@ const Navbar = () => {
   // Calculate navbar position based on keyboard state
   const getNavbarPosition = () => {
     if (showSearchInput && keyboardOpen) {
-      return 'top-6'; // Move to top when keyboard is open
+      return 'top-30'; // Move to top when keyboard is open
     }
     return 'bottom-6'; // Default bottom position
   };

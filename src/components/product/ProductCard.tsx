@@ -39,14 +39,15 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
     setLikeLoading(true);
     const previousIsLiked = isLiked;
     const previousLikeCount = likeCount;
+    const newIsLiked = !isLiked;
 
-    // Optimistic update
-    setIsLiked(!isLiked);
-    setLikeCount(prev => isLiked ? prev - 1 : prev + 1);
+    // Optimistic update - use the new state for calculations
+    setIsLiked(newIsLiked);
+    setLikeCount(prev => newIsLiked ? prev + 1 : prev - 1);
 
     try {
       await toggleProductLike(product.productId, token);
-      onLikeToggle?.(product.productId, !previousIsLiked);
+      onLikeToggle?.(product.productId, newIsLiked);
     } catch (error) {
       // Revert optimistic update on error
       setIsLiked(previousIsLiked);

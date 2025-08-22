@@ -1,3 +1,4 @@
+//src/hooks/useProduct.ts
 import { useCallback, useEffect, useState } from 'react';
 import { Product } from '@/lib/types/product';
 import { getProductById } from '@/services/product.service';
@@ -31,10 +32,23 @@ export function useProduct(productId: string | null, token?: string) {
     }
   }, [productId, fetchProduct]);
 
+  const handleLikeToggle = useCallback((productId: string, isLiked: boolean) => {
+    setProduct(prevProduct => 
+      prevProduct && prevProduct.productId === productId 
+        ? { 
+            ...prevProduct, 
+            isLiked, 
+            likeCount: isLiked ? prevProduct.likeCount + 1 : prevProduct.likeCount - 1 
+          }
+        : prevProduct
+    );
+  }, []);
+
   return {
     isLoading,
     product,
     error,
+    handleLikeToggle,
     retry: () => (productId ? fetchProduct(productId) : undefined),
   };
 }

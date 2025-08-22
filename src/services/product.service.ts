@@ -44,7 +44,8 @@ export const getProductById = async (productId: string, token?: string): Promise
 
     const rawData: unknown = await response.json();
     const data = rawData as Product & { imageUrls: unknown };
-
+    console.log(data);
+    
     return {
       ...data,
       imageUrls: normalizeImageUrls(data.imageUrls),
