@@ -106,10 +106,9 @@ const Navbar = () => {
   );
 
   const CartIcon = ({ size = 20, className = "" }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <circle cx="9" cy="21" r="1"/>
-      <circle cx="20" cy="21" r="1"/>
-      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+    <svg width={size} height={size} viewBox="0 0 20 26" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M5 6C5 2.5 7.025 1 9.5 1C11.975 1 14 2.77623 14 6" />
+      <rect x="1" y="6" width="18" height="19" rx="3" />
     </svg>
   );
 
