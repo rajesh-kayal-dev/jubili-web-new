@@ -245,10 +245,10 @@ export default function ProductCard({ product, onLikeToggle }: ProductCardProps)
             onClick={() => addToCart(product.productId)}
             disabled={cartLoading}
             className={`${
-              cartLoading ? 'bg-gray-400' : 'bg-gray-300 hover:bg-gray-400'
+              cartLoading ? 'bg-gray-300' : 'bg-gray-200 hover:bg-gray-300 cursor-pointer'
             } text-white rounded-full px-3 py-3 text-lg font-semibold transition-colors`}
           >
-            <img src="/icons/cart-bag.svg" alt="Add to Cart" />
+            <img src="/icons/cart-bag.svg" alt="Add to Cart" className='pl-2 pr-2 h-5'/>
           </button>
           <div className="flex-1" />
         </div>

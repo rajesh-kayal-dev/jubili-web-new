@@ -128,7 +128,7 @@ export default function ImageCarousel({ images, productName }: ImageCarouselProp
     let timeoutId: NodeJS.Timeout;
     const debouncedHandleScroll = () => {
       clearTimeout(timeoutId);
-      timeoutId = setTimeout(handleScroll, 150);
+      timeoutId = setTimeout(handleScroll, 300);
     };
 
     container.addEventListener('scroll', debouncedHandleScroll);
@@ -149,7 +149,7 @@ export default function ImageCarousel({ images, productName }: ImageCarouselProp
   return (
     <div className="relative group">
       {/* Fixed Height Container like Flutter ListView */}
-      <div className="h-[440px] rounded-2xl bg-gray-50 overflow-hidden">
+      <div className="h-[440px] bg-gray-50 overflow-hidden">
         <div 
           ref={scrollContainerRef}
           className="h-full overflow-x-auto overflow-y-hidden flex items-center gap-4 px-4 cursor-grab active:cursor-grabbing select-none"
@@ -167,9 +167,9 @@ export default function ImageCarousel({ images, productName }: ImageCarouselProp
               <img 
                 src={image} 
                 alt={`${productName} - Image ${index + 1}`} 
-                className="h-full w-auto object-contain pointer-events-none transition-opacity duration-300"
+                className="rounded-2xl h-full w-auto object-contain pointer-events-none transition-opacity duration-300"
                 style={{
-                  opacity: Math.abs(index - currentIndex) <= 1 ? 1 : 0.7
+                  opacity: Math.abs(index - currentIndex) <= 1 ? 1 : 0.5
                 }}
                 draggable={false}
               />

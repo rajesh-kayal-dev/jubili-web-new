@@ -12,15 +12,21 @@ export const ToastContainer: React.FC = () => {
   return (
     <div
       aria-live="assertive"
-      className="fixed inset-0 flex items-end justify-center px-4 py-6 pointer-events-none sm:p-6 sm:items-start sm:justify-end z-50"
+      className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 pointer-events-none"
     >
-      <div className="w-full flex flex-col items-center space-y-4 sm:items-end">
-        {toasts.map((toast) => (
-          <ToastNotification
+      <div className="flex flex-col items-center space-y-3">
+        {toasts.map((toast, index) => (
+          <div
             key={toast.id}
-            toast={toast}
-            onRemove={removeToast}
-          />
+            style={{ 
+              zIndex: 50 + toasts.length - index,
+            }}
+          >
+            <ToastNotification
+              toast={toast}
+              onRemove={removeToast}
+            />
+          </div>
         ))}
       </div>
     </div>

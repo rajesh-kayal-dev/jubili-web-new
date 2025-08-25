@@ -171,6 +171,9 @@ export const toggleProductLike = async (
       throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
     }
 
+    // console.log( await response.json());
+    
+
     return await response.json();
   } catch (error) {
     console.error('Error toggling product like:', error);

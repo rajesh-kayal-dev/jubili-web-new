@@ -20,7 +20,7 @@ export const useCart = (): UseCartReturn => {
   const [cart, setCart] = useState<CartResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { showToastWithAction } = useToastActions();
+  const { showToastWithAction, showSuccess, showError, showInfo } = useToastActions();
 
   const fetchCart = useCallback(async (): Promise<CartResponse | null> => {
     if (!userId) {
@@ -38,12 +38,14 @@ export const useCart = (): UseCartReturn => {
       return cartData;
     } catch (err) {
       console.error('Error fetching cart:', err);
-      setError('Failed to fetch cart');
+      const errorMessage = 'Failed to fetch cart';
+      setError(errorMessage);
+      showError('Cart Error', errorMessage, 5000);
       return null;
     } finally {
       setLoading(false);
     }
-  }, [userId]);
+  }, [userId, showError]);
 
   const addToCart = useCallback(async (productId: string) => {
     if (!userId) {
@@ -63,26 +65,30 @@ export const useCart = (): UseCartReturn => {
       };
 
       const response = await userActionsService.addToCart(cartAction);
-      console.log('Product added to cart:', response);
+      // console.log('Product added to cart:', response);
       await fetchCart(); // Refresh cart after adding item
-    } catch (err) {
-      console.error('Failed to add product to cart:', err);
-      setError('Failed to add product to cart');
-      throw err;
-    } finally {
+      
       showToastWithAction(
-        'info',
-        'Success',
-        'Item added to cart',
-        'View Cart',
+        'success',
+        'Done', 
+        'Item added to cart successfully',
+        'Go to Cart',
         () => {
-          
+          // Navigate to cart page
+          window.location.href = '/cart';
         },
         5000
       );
+    } catch (err) {
+      console.error('Failed to add product to cart:', err);
+      const errorMessage = 'Failed to add product to cart';
+      setError(errorMessage);
+      showError('Error', errorMessage, 5000);
+      throw err;
+    } finally {
       setLoading(false);
     }
-  }, [userId, fetchCart]);
+  }, [userId, fetchCart, showSuccess, showError]);
 
   const updateQuantity = useCallback(async (productId: string, newQuantity: number) => {
     if (!userId) {
@@ -108,14 +114,18 @@ export const useCart = (): UseCartReturn => {
 
       await userActionsService.addToCart(cartAction);
       await fetchCart(); // Refresh cart after updating quantity
+      
+      // showSuccess('Updated!', `Quantity updated to ${newQuantity}`, 3000);
     } catch (err) {
       console.error('Failed to update quantity:', err);
-      setError('Failed to update quantity');
+      const errorMessage = 'Failed to update quantity';
+      setError(errorMessage);
+      showError('Error', errorMessage, 5000);
       throw err;
     } finally {
       setLoading(false);
     }
-  }, [userId, fetchCart]);
+  }, [userId, fetchCart, showSuccess, showError]);
 
   const removeFromCart = useCallback(async (productId: string) => {
     if (!userId) {
@@ -136,14 +146,18 @@ export const useCart = (): UseCartReturn => {
 
       await userActionsService.deleteCart(cartDelete);
       await fetchCart(); // Refresh cart after removing item
+      
+      showSuccess('Removed!', 'Item removed from cart successfully', 12000);
     } catch (err) {
       console.error('Failed to remove from cart:', err);
-      setError('Failed to remove from cart');
+      const errorMessage = 'Failed to remove from cart';
+      setError(errorMessage);
+      showError('Error', errorMessage, 5000);
       throw err;
     } finally {
       setLoading(false);
     }
-  }, [userId, fetchCart]);
+  }, [userId, fetchCart, showSuccess, showError]);
 
   const refetch = useCallback(async () => {
     await fetchCart();

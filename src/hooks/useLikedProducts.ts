@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Product } from '@/lib/types/product';
 import { getLikedProducts, toggleProductLike } from '@/services/product.service';
 import { useAuth } from './useAuth';
+import { useToastActions } from './useToastActions';
 
 interface UseLikedProductsReturn {
   likedProducts: Product[];
@@ -16,6 +17,7 @@ export const useLikedProducts = (): UseLikedProductsReturn => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { token } = useAuth();
+  const {showInfo} = useToastActions();
 
   const fetchLikedProducts = useCallback(async () => {
     if (!token) {
