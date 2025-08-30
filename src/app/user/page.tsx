@@ -191,7 +191,7 @@ export default function UserProfile() {
                             </div>
 
                             {/* Add New Address Button */}
-                            <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 flex flex-col items-center justify-center text-gray-500 hover:border-gray-400 hover:text-gray-600 transition-colors cursor-pointer md:col-span-2">
+                            <div id="add-address" className="border-2 border-dashed border-gray-300 rounded-xl p-6 flex flex-col items-center justify-center text-gray-500 hover:border-gray-400 hover:text-gray-600 transition-colors cursor-pointer md:col-span-2">
                                 <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -199,66 +199,6 @@ export default function UserProfile() {
                                 </div>
                                 <div className="font-medium">Add New Address</div>
                                 <div className="text-sm text-gray-400 mt-1">+ Add delivery address</div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                {/* My Cards Section */}
-                <section className="mb-8">
-                    <div className="py-4 text-2xl font-bold">My Cards</div>
-                    <div className="bg-white rounded-2xl border border-gray-300 p-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {/* Card 1 */}
-                            <div className="relative bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl p-6 text-white shadow-lg">
-                                <div className="flex justify-between items-start mb-8">
-                                    <div className="text-xs uppercase tracking-wide opacity-80">Debit Card</div>
-                                    <div className="w-8 h-6 bg-white bg-opacity-20 rounded"></div>
-                                </div>
-                                <div className="font-mono text-lg tracking-wider mb-4">
-                                    •••• •••• •••• 4532
-                                </div>
-                                <div className="flex justify-between items-end">
-                                    <div>
-                                        <div className="text-xs opacity-80">Card Holder</div>
-                                        <div className="text-sm font-medium">{user.name.toUpperCase()}</div>
-                                    </div>
-                                    <div>
-                                        <div className="text-xs opacity-80">Expires</div>
-                                        <div className="text-sm">12/27</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Card 2 */}
-                            <div className="relative bg-gradient-to-br from-purple-500 to-purple-700 rounded-xl p-6 text-white shadow-lg">
-                                <div className="flex justify-between items-start mb-8">
-                                    <div className="text-xs uppercase tracking-wide opacity-80">Credit Card</div>
-                                    <div className="w-8 h-6 bg-white bg-opacity-20 rounded"></div>
-                                </div>
-                                <div className="font-mono text-lg tracking-wider mb-4">
-                                    •••• •••• •••• 8901
-                                </div>
-                                <div className="flex justify-between items-end">
-                                    <div>
-                                        <div className="text-xs opacity-80">Card Holder</div>
-                                        <div className="text-sm font-medium">{user.name.toUpperCase()}</div>
-                                    </div>
-                                    <div>
-                                        <div className="text-xs opacity-80">Expires</div>
-                                        <div className="text-sm">08/26</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Add New Card Button */}
-                            <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 flex flex-col items-center justify-center text-gray-500 hover:border-gray-400 hover:text-gray-600 transition-colors cursor-pointer">
-                                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                    </svg>
-                                </div>
-                                <div className="font-medium">Add New Card</div>
-                                <div className="text-sm text-gray-400 mt-1">+ Add payment method</div>
                             </div>
                         </div>
                     </div>
