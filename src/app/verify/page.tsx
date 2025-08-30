@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useToastActions } from '@/hooks/useToastActions';
 
@@ -14,7 +14,7 @@ interface VerificationResponse {
   token?: string;
 }
 
-export default function EmailVerificationPage() {
+function EmailVerificationContent() {
   const [status, setStatus] = useState<'verifying' | 'success' | 'error'>('verifying');
   const [message, setMessage] = useState('Verifying your email address...');
   const [isRedirecting, setIsRedirecting] = useState(false);
@@ -25,16 +25,7 @@ export default function EmailVerificationPage() {
   
   const token = searchParams.get('token');
 
-  useEffect(() => {
-    if (token) {
-      verifyEmail(token);
-    } else {
-      setStatus('error');
-      setMessage('Invalid verification link. No token provided.');
-    }
-  }, [token]);
-
-  const verifyEmail = async (verificationToken: string) => {
+  const verifyEmail = useCallback(async (verificationToken: string) => {
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
       const response = await fetch(`${baseUrl}/api/users/verify?token=${verificationToken}`, {
@@ -73,7 +64,16 @@ export default function EmailVerificationPage() {
       setMessage('Something went wrong during verification. Please try again.');
       showError('Verification Error', 'Network error occurred. Please check your connection.');
     }
-  };
+  }, [showSuccess, showError, router]);
+
+  useEffect(() => {
+    if (token) {
+      verifyEmail(token);
+    } else {
+      setStatus('error');
+      setMessage('Invalid verification link. No token provided.');
+    }
+  }, [token, verifyEmail]);
 
   const handleResendSignup = () => {
     router.push('/signup');
@@ -187,5 +187,26 @@ export default function EmailVerificationPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function EmailVerificationPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
+        <div className="max-w-md w-full bg-white shadow-lg rounded-2xl p-8 text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
+            <svg className="animate-spin w-8 h-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Loading...</h1>
+          <p className="text-lg text-gray-600">Please wait while we load the verification page...</p>
+        </div>
+      </div>
+    }>
+      <EmailVerificationContent />
+    </Suspense>
   );
 }
