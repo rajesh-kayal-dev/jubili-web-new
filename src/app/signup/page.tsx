@@ -1,15 +1,14 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import Image from "next/image";
 
 export default function SignupPage() {
-  // const router = useRouter();
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const { signup, loading, error: authError } = useAuth();
 
@@ -23,10 +22,72 @@ export default function SignupPage() {
         phone,
         password
       });
+      // Set success state to show verification message
+      setIsSuccess(true);
     } catch (err) {
       console.error('Signup failed:', err);
     }
   };
+
+  // Show success message after signup
+  if (isSuccess) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
+        <div className="max-w-md w-full bg-white shadow-lg rounded-2xl p-8 text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-6">
+            <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 7.89a1 1 0 001.42 0L21 7M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Check Your Email!</h1>
+          
+          <p className="text-gray-600 mb-6">
+            We&apos;ve sent a verification email to <strong>{email}</strong>. 
+            Please click the verification link in the email to complete your registration.
+          </p>
+          
+          <div className="space-y-3">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <p className="text-sm text-blue-700">
+                <strong>Important:</strong> The verification link will expire in 10 minutes for security reasons.
+              </p>
+            </div>
+            
+            <button
+              onClick={() => window.location.href = '/login'}
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            >
+              Go to Login
+            </button>
+            
+            <button
+              onClick={() => {
+                setIsSuccess(false);
+                // Reset form
+                setFullname("");
+                setEmail("");
+                setPhone("");
+                setPassword("");
+              }}
+              className="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            >
+              Sign Up Again
+            </button>
+          </div>
+          
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <p className="text-xs text-gray-500">
+              Didn&apos;t receive the email? Check your spam folder or contact{' '}
+              <a href="mailto:support@jubili.in" className="text-blue-600 hover:underline">
+                support@jubili.in
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -139,4 +200,3 @@ export default function SignupPage() {
     </>
   );
 }
-

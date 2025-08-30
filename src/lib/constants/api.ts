@@ -4,6 +4,7 @@ export const API_ENDPOINTS = {
   AUTH: {
     LOGIN: '/api/users/login',
     REGISTER: '/api/users/signup',
+    VERIFY: '/api/users/verify',
     LOGOUT: '/api/users/logout',
   },
   PRODUCTS: {

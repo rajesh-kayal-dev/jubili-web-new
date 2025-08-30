@@ -2,9 +2,12 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { authService } from '../services/auth.service';
 import { User, LoginCredentials, SignupCredentials } from '../lib/types/auth';
+import { useToastActions } from './useToastActions';
 
 export const useAuth = () => {
   const router = useRouter();
+  const { showSuccess, showError, showInfo } = useToastActions();
+  
   const [user, setUser] = useState<User | null>(() => {
     if (typeof window !== 'undefined') {
       const storedUser = localStorage.getItem('user_info');
@@ -27,12 +30,14 @@ export const useAuth = () => {
       localStorage.setItem('user_info', JSON.stringify(response.user));
       
       setUser(response.user);
+      showSuccess('Login Successful', `Welcome back, ${response.user.name}!`);
       router.push('/');
       
       return response;
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred during login';
       setError(errorMessage);
+      showError('Login Failed', errorMessage);
       throw err;
     } finally {
       setLoading(false);
@@ -46,17 +51,53 @@ export const useAuth = () => {
     try {
       const response = await authService.signup(credentials);
       
-      // Store token and user info in localStorage
-      localStorage.setItem('auth_token', response.token);
-      localStorage.setItem('user_info', JSON.stringify(response.user));
+      // Show success message about email verification
+      showSuccess(
+        'Account Created!', 
+        'Please check your email and click the verification link to complete your registration.',
+        8000 // 8 seconds
+      );
       
-      setUser(response.user);
-      router.push('/'); // Redirect to home page after successful signup
+      // Redirect to login page with a message
+      setTimeout(() => {
+        showInfo(
+          'Check Your Email', 
+          'We sent a verification link to your email address. Please verify to login.',
+          10000
+        );
+        router.push('/login');
+      }, 2000);
       
       return response;
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred during signup';
       setError(errorMessage);
+      showError('Signup Failed', errorMessage);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verifyEmail = async (token: string) => {
+    setLoading(true);
+    setError('');
+    
+    try {
+      const response = await authService.verifyEmail(token);
+      
+      // Store token and user info in localStorage
+      localStorage.setItem('auth_token', response.token);
+      localStorage.setItem('user_info', JSON.stringify(response.user));
+      
+      setUser(response.user);
+      showSuccess('Email Verified!', `Welcome to Jubili, ${response.user.name}!`);
+      
+      return response;
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Email verification failed';
+      setError(errorMessage);
+      showError('Verification Failed', errorMessage);
       throw err;
     } finally {
       setLoading(false);
@@ -66,6 +107,7 @@ export const useAuth = () => {
   const logout = () => {
     authService.logout();
     setUser(null);
+    showInfo('Logged Out', 'You have been successfully logged out.');
     router.push('/login');
   };
 
@@ -91,6 +133,7 @@ export const useAuth = () => {
     error,
     login,
     signup,
+    verifyEmail,
     logout,
   };
 };
